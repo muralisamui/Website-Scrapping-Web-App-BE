@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param, Delete, Body, ParseArrayPipe, ValidationPipe, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Query, Param, Delete, Body, ParseIntPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { CompanyDetailsService } from './company_details.service';
 import { CompanyDetails } from './entity/company_details.entity';
 import { DeleteMultipleCompaniesDto } from './dto/delete-multiple-companies.dto';
@@ -9,17 +9,20 @@ export class CompanyDetailsController {
 
     @Get('scrape')
     async scrape(@Query('url') url: string): Promise<CompanyDetails> {
-        return this.companyDetailsService.scrapeWebsite(url);
+        try {
+            return await this.companyDetailsService.scrapeWebsite(url);
+        } catch (error) {
+            throw new HttpException(`Failed to scrape website: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-    // @Get()
-    // async getAllCompanies(): Promise<CompanyDetails[]> {
-    //     return this.companyDetailsService.getAllCompanies();
-    // }
 
     @Get(':id')
     async getCompanyById(@Param('id') id: number): Promise<CompanyDetails> {
-        return this.companyDetailsService.getCompanyById(id);
+        try {
+            return await this.companyDetailsService.getCompanyById(id);
+        } catch (error) {
+            throw new Error(`Failed to get company with: ${id}`)
+        }
     }
 
     @Get()
@@ -27,19 +30,31 @@ export class CompanyDetailsController {
         @Query('page', ParseIntPipe) page: number = 1,
         @Query('limit', ParseIntPipe) limit: number = 10,
     ): Promise<{ items: CompanyDetails[], meta: any }> {
-        return this.companyDetailsService.getCompaniesPaginated(page, limit);
+        try {
+            return this.companyDetailsService.getCompaniesPaginated(page, limit);
+        } catch (error) {
+            throw new Error(`Failed to fetch paginated companies: ${error.message}`);
+        }
     }
 
     @Delete(':id')
     async deleteCompany(@Param('id') id: number): Promise<void> {
-        return this.companyDetailsService.deleteCompany(id);
+        try {
+            return await this.companyDetailsService.deleteCompany(id);
+        } catch (error) {
+            throw new Error(`Failed to delete company: ${error.message}`);
+        }
     }
 
     @Delete()
     async deleteMultipleCompanies(
         @Body() deleteMultipleCompaniesDto: DeleteMultipleCompaniesDto,
     ): Promise<void> {
-        const { ids } = deleteMultipleCompaniesDto;
-        return this.companyDetailsService.deleteMultipleCompanies(ids);
+        try {
+            const { ids } = deleteMultipleCompaniesDto;
+            return await this.companyDetailsService.deleteMultipleCompanies(ids);
+        } catch (error) {
+            throw new Error(`Failed to delete multiple companies: ${error.message}`);
+        }
     }
 }
