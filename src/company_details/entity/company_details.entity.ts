@@ -38,4 +38,7 @@ export class CompanyDetails {
 
   @Column({ nullable: true })
   email: string;
+
+  @Column({ type: 'bytea', nullable: true })
+  screenshot: Buffer;
 }
