@@ -5,10 +5,10 @@ import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
+const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const port = process.env.PORT || 4000;
   app.enableCors({
     origin: process.env.FE_BASE_URL || 'http://127.0.0.1:5173',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -24,8 +24,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(port, () => {
-    console.log(`App listening on port ${port}`)
+  await app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`)
   });
 }
 bootstrap();
