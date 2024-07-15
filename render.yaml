@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: website-scrapping-web-app-be
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run migration:run && npm run start:prod
+    envVars:
+      - key: POSTGRES_URI
+        fromDatabase:
+          name: web_scrapper_db
+          key: connectionString
+      - key: FE_BASE_URL
+        value: http://127.0.0.1:5173
+      - key: PORT
+        value: "3000"
+
+databases:
+  - name: web_scrapper_db
+    type: postgres
+    plan: free
+    region: singapore
