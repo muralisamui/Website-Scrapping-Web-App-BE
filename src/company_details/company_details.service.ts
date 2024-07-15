@@ -24,6 +24,13 @@ export class CompanyDetailsService {
             const page = await browser.newPage();
             await page.goto(url);
             const content = await page.content();
+            // const screenshotBuffer = await page.screenshot({ fullPage: true });
+            await page.setViewport({ width: 1280, height: 720 });
+            // const screenshot = await page.screenshot({
+            //     path: 'screenshot.png',
+            // })
+            const screenshotBuffer = await page.screenshot({ fullPage: true });
+            // const screenshot = await page.screenshot({ encoding: 'binary' });
             await browser.close();
 
             const $ = cheerio.load(content);
@@ -50,6 +57,7 @@ export class CompanyDetailsService {
                 address,
                 phone,
                 email,
+                screenshot: screenshotBuffer,
             });
 
             return this.companyDetailsRepository.save(companyDetails);

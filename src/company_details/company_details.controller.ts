@@ -1,7 +1,8 @@
-import { Controller, Get, Query, Param, Delete, Body, ParseIntPipe, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Query, Param, Delete, Body, ParseIntPipe, HttpException, HttpStatus, Res } from '@nestjs/common';
 import { CompanyDetailsService } from './company_details.service';
 import { CompanyDetails } from './entity/company_details.entity';
 import { DeleteMultipleCompaniesDto } from './dto/delete-multiple-companies.dto';
+import { Response } from 'express';
 
 @Controller('company-details')
 export class CompanyDetailsController {
@@ -19,9 +20,28 @@ export class CompanyDetailsController {
     @Get(':id')
     async getCompanyById(@Param('id') id: number): Promise<CompanyDetails> {
         try {
-            return await this.companyDetailsService.getCompanyById(id);
+            // return await this.companyDetailsService.getCompanyById(id);
+            const company = await this.companyDetailsService.getCompanyById(id);
+            if (!company) {
+                throw new HttpException('Company not found', HttpStatus.NOT_FOUND);
+            }
+            return company;
         } catch (error) {
             throw new Error(`Failed to get company with: ${id}`)
+        }
+    }
+
+    @Get(':id/screenshot')
+    async getCompanyScreenshot(@Param('id') id: number, @Res() res: Response): Promise<void> {
+        try {
+            const company = await this.companyDetailsService.getCompanyById(id);
+            if (!company.screenshot) {
+                throw new HttpException('Screenshot not found', HttpStatus.NOT_FOUND);
+            }
+            res.setHeader('Content-Type', 'image/png');
+            res.send(company.screenshot);
+        } catch (error) {
+            throw new HttpException(`Failed to get screenshot for company with ID ${id}: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
