@@ -6,7 +6,6 @@ import { CompanyDetailsModule } from './company_details/company_details.module';
 import { CompanyDetails } from './company_details/entity/company_details.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-const DATABASE_URI='postgresql://murali_samui:JkvT0tAK8Yc1I4ss6g45gjBPDL2kdigc@dpg-cqaetnlds78s739qv0q0-a.singapore-postgres.render.com/web_scrapper_db'
 
 @Module({
   imports: [
