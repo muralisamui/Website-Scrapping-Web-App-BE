@@ -21,7 +21,10 @@ export class CompanyDetailsService {
             }
 
             const browser = await puppeteer.launch({
-                executablePath: '/opt/render/.cache/puppeteer/chrome'
+                executablePath: '/opt/render/.cache/puppeteer/chrome', 
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                // /opt/render/.cache/puppeteer/chrome)"
             });
             const page = await browser.newPage();
             await page.goto(url);
