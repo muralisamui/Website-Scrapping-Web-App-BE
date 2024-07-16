@@ -19,12 +19,27 @@ export class CompanyDetailsService {
             if (existingCompany) {
                 return existingCompany;
             }
+            const os = require("os");
+            // puppeteer-extra is a drop-in replacement for puppeteer,
+            // it augments the installed puppeteer with plugin functionality
+            const puppeteer = require('puppeteer-extra');
+
+            // add stealth plugin and use defaults (all evasion techniques)
+            const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+            puppeteer.use(StealthPlugin());
 
             const browser = await puppeteer.launch({
-                executablePath: '/opt/render/.cache/puppeteer/chrome', 
+                // executablePath: `/opt/render/.cache/puppeteer/chrome/chrome.exe`,
+                executablePath:process.env.NODE_ENV === "production"
+                ? process.env.PUPPETEER_EXECUTABLE_PATH
+                : puppeteer.executablePath(),
                 headless: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox'],
-                // /opt/render/.cache/puppeteer/chrome)"
+                args: [
+                    "--disable-setuid-sandbox",
+                    "--no-sandbox",
+                    "--single-process",
+                    "--no-zygote"
+                ],
             });
             const page = await browser.newPage();
             await page.goto(url);
