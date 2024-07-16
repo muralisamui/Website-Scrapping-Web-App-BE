@@ -3,85 +3,29 @@ import { MigrationInterface, QueryRunner, Table } from "typeorm";
 export class New1721063666857 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.createTable(
-            new Table({
-                name: 'company_details',
-                columns: [
-                    {
-                        name: 'id',
-                        type: 'int',
-                        isPrimary: true,
-                        isGenerated: true,
-                        generationStrategy: 'increment',
-                    },
-                    {
-                        name: 'url',
-                        type: 'varchar',
-                        isUnique: true,
-                    },
-                    {
-                        name: 'name',
-                        type: 'varchar',
-                        isNullable: true,
-                    },
-                    {
-                        name: 'description',
-                        type: 'varchar',
-                        isNullable: true,
-                    },
-                    {
-                        name: 'logo',
-                        type: 'varchar',
-                        isNullable: true,
-                    },
-                    {
-                        name: 'facebook',
-                        type: 'varchar',
-                        isNullable: true,
-                    },
-                    {
-                        name: 'linkedin',
-                        type: 'varchar',
-                        isNullable: true,
-                    },
-                    {
-                        name: 'twitter',
-                        type: 'varchar',
-                        isNullable: true,
-                    },
-                    {
-                        name: 'instagram',
-                        type: 'varchar',
-                        isNullable: true,
-                    },
-                    {
-                        name: 'address',
-                        type: 'varchar',
-                        isNullable: true,
-                    },
-                    {
-                        name: 'phone',
-                        type: 'varchar',
-                        isNullable: true,
-                    },
-                    {
-                        name: 'email',
-                        type: 'varchar',
-                        isNullable: true,
-                    },
-                    {
-                        name: 'screenshot',
-                        type: 'bytea',
-                        isNullable: true,
-                    },
-                ],
-            }),
-            true
-        );
+        await queryRunner.query(`
+            CREATE TABLE "company_details" (
+                "id" SERIAL PRIMARY KEY,
+                "url" VARCHAR(4000) UNIQUE NOT NULL,
+                "name" VARCHAR,
+                "description" VARCHAR(5000),
+                "logo" VARCHAR(2000),
+                "facebook" VARCHAR(2000),
+                "linkedin" VARCHAR(2000),
+                "twitter" VARCHAR(2000),
+                "instagram" VARCHAR(2000),
+                "address" VARCHAR(2000),
+                "phone" VARCHAR(200),
+                "email" VARCHAR(500),
+                "screenshot" BYTEA
+            )
+        `);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('company_details');
+        await queryRunner.query(`
+            DROP TABLE "company_details"
+        `);
     }
 
 }
