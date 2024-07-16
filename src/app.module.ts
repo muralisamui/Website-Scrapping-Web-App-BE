@@ -19,7 +19,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: configService.get<string>('POSTGRES_URI'),
-        synchronize: false, // Set to true only for development
+        synchronize: true, // Set to true only for development
         entities: ['dist/**/*.entity.js'],
         migrations: ['dist/migrations/**/*.js'],
         subscribers: ['dist/subscriber/**/*.js'],
